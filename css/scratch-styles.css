@@ -1,0 +1,148 @@
+body {
+    background-image: url(/assets/star-wars-backgrounds.jpeg);
+    color: #ffe81f;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12pt;
+    font-weight: 400;
+    align-items: center;
+}
+
+img {
+    display: block;
+    margin: auto
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 24pt;
+    margin: 5px;
+    text-align: center;
+}
+
+h4 {
+    font-weight: bold;
+    font-size: 14pt;
+    text-align: center;
+}
+
+h5 {
+    font-weight: bold;
+    font-size: 12pt;
+    text-align: center;
+
+}
+
+a {
+    color: #ffe81f;
+}
+
+a:hover {
+    color: black;
+}
+
+.container {
+    background-color: #64696C;
+    border: 2px solid #ffe81f;
+    padding: 20px;
+    margin: 5px;
+    font-weight: lighter !important;
+}
+
+.container span {
+    font-weight: 600 !important;
+    font-size: 14pt;
+}
+
+.text-container {
+    background-color: #f8fafc;
+    color: #000001;
+    padding: 20px;
+    border: 2px solid #ffe81f;
+    font-weight: lighter !important;
+}
+
+.text-container a {
+    color: #0088ff;
+}
+
+.text-container a:hover {
+    color: #ff0000;
+}
+
+.col-3 {
+    column-count: 3;
+    column-width: auto;
+    column-rule: 1px solid #ffe81f;
+}
+
+.grid-container {
+    display: grid;
+    column-gap: 20px;
+    column-rule: 1px solid #ffe81f;
+}
+
+.grid-item-1 {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 4;
+}
+
+.grid-item-2 {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 4;
+}
+
+.grid-item-3 {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 4;
+}
+
+.grid-span-mid-row {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+.grid-1-1half {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 4;
+    width: 100%;
+}
+
+.grid-2-2half {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 4;
+}
+
+.center {
+    margin: auto;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.navigation {
+    position: absolute;
+    right: 7px;
+}
+
+.menu {
+    position: absolute;
+    left: 7px;
+}
+
+.bold {
+    font-weight: 900;
+}
+

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Conrad Bradford - Game Demo</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Custom Google font-->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="../css/styles.css" rel="stylesheet" />
+
+        <style>
+         
+            #container {
+              display: flex;
+              align-items: flex-start;
+              position: relative;
+            }
+            #highScores {
+              margin-right: 20px;
+              padding: 10px;
+              border: 2px solid #000428;
+              width: 150px;
+              height: 400px;
+            }
+            #highScores h2 {
+              text-align: center;
+              margin: 0 0 10px;
+            }
+            #highScores ul {
+              list-style: none;
+              padding: 0;
+              margin: 0;
+            }
+            #highScores li {
+              margin: 5px 0;
+            }
+            #scorePanel {
+              margin-left: 20px;
+              padding: 10px;
+              border: 2px solid #000428;
+              width: 150px;
+              height: 400px;
+            }
+            #scorePanel h2 {
+              text-align: center;
+              margin: 0 0 10px;
+            }
+            #gameCanvas {
+              display: block;
+              border: 2px solid #000428;
+            }
+            #controls {
+              margin-top: 20px;
+              text-align: center;
+            }
+            #controls button {
+              padding: 10px 20px;
+              font-size: 16px;
+              cursor: pointer;
+            }
+          </style>
+        
+        
+    </head>
+    <body class="d-flex flex-column h-100 bg-light">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+                <div class="container px-5">
+                    <a class="navbar-brand" href="../index.html"><span class="fw-bolder text-primary">Conrad Bradford</span></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
+                            <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../resume.html">Resume</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../game-demo.html">Game Demo</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://www.linkedin.com/in/conrad-bradford/" target="_blank"><i class="bi bi-linkedin"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- Projects Section-->
+            <section class="py-5">
+              <div class="text-center my-5">
+                <h2 class="display-5 fw-bolder"><span class="text-gradient d-inline">Simple Pong</span></h2>
+                <p class="lead fw-light mb-4">Here is a simple game I created in collaboration with AI. <br>
+                    The ball speeds up every 5 points you score
+                </p>
+              </div>
+              <div class="py-5 text-center my-5 d-flex justify-content-center" id="container">
+                <div id="highScores">
+                  <h2>High Scores</h2>
+                  <ul id="scoreList">
+                    <li>No scores yet</li>
+                  </ul>
+                </div>
+                <div>
+                  <canvas id="gameCanvas" width="600" height="400"></canvas>
+                  <div id="controls">
+                    <button class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" id="startButton">Start Game</button>
+                    <p id="gameOver" style="display: none; color: red;">Game Over!</p>
+                  </div>
+                </div>
+                <div id="scorePanel">
+                  <h2>Score</h2>
+                  <p>Score: <span id="score">0</span></p>
+                </div>
+              </div>
+                  <!-- script for pong game -->
+                </div>
+                  <script>
+                      const canvas = document.getElementById('gameCanvas');
+                      const ctx = canvas.getContext('2d');
+                      const startButton = document.getElementById('startButton');
+                      const scoreDisplay = document.getElementById('score');
+                      const gameOverText = document.getElementById('gameOver');
+                      const highScoreList = document.getElementById('scoreList');
+                  
+                      let paddle = { width: 100, height: 10, x: canvas.width / 2 - 50, y: canvas.height - 20 };
+                      let ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 10, dx: 2, dy: -2, speed: 1 };
+                      let score = 0;
+                      let highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+                      let intervalId = null;
+                  
+                      function drawPaddle() {
+                        ctx.fillStyle = '#000428';
+                        ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+                      }
+                  
+                      function drawBall() {
+                        ctx.beginPath();
+                        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = '#004e92';
+                        ctx.fill();
+                        ctx.closePath();
+                      }
+                  
+                      function drawScore() {
+                        scoreDisplay.textContent = score;
+                      }
+                  
+                      function resetBall() {
+                        ball.x = canvas.width / 2;
+                        ball.y = canvas.height / 2;
+                        ball.dx = 2 * (Math.random() < 0.5 ? 1 : -1);
+                        ball.dy = -2;
+                        ball.speed = 1;
+                      }
+                  
+                      function movePaddle(event) {
+                        const rect = canvas.getBoundingClientRect();
+                        const mouseX = event.clientX - rect.left;
+                        paddle.x = Math.min(Math.max(mouseX - paddle.width / 2, 0), canvas.width - paddle.width);
+                      }
+                  
+                      function updateBall() {
+                        ball.x += ball.dx * ball.speed;
+                        ball.y += ball.dy * ball.speed;
+                  
+                        if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                          ball.dx *= -1;
+                        }
+                  
+                        if (ball.y - ball.radius < 0) {
+                          ball.dy *= -1;
+                        } else if (ball.y + ball.radius > canvas.height) {
+                          gameOver();
+                        }
+                  
+                        if (
+                          ball.y + ball.radius >= paddle.y &&
+                          ball.x > paddle.x &&
+                          ball.x < paddle.x + paddle.width
+                        ) {
+                          ball.dy *= -1;
+                          score++;
+                          if (score % 5 === 0) {
+                            ball.speed += 0.5;
+                          }
+                        }
+                      }
+                  
+                      function gameOver() {
+                        clearInterval(intervalId);
+                        gameOverText.style.display = 'block';
+                        updateHighScores(score);
+                        renderHighScores();
+                      }
+                  
+                      function draw() {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        drawPaddle();
+                        drawBall();
+                        drawScore();
+                      }
+                  
+                      function gameLoop() {
+                        updateBall();
+                        draw();
+                      }
+                  
+                      function updateHighScores(newScore) {
+                        highScores.push(newScore);
+                        highScores.sort((a, b) => b - a);
+                        highScores = highScores.slice(0, 5);
+                        localStorage.setItem('highScores', JSON.stringify(highScores));
+                      }
+                  
+                      function renderHighScores() {
+                        highScoreList.innerHTML = '';
+                        if (highScores.length === 0) {
+                          highScoreList.innerHTML = '<li>No scores yet</li>';
+                        } else {
+                          highScores.forEach((score, index) => {
+                            const li = document.createElement('li');
+                            li.textContent = `${index + 1}. ${score}`;
+                            highScoreList.appendChild(li);
+                          });
+                        }
+                      }
+                  
+                      startButton.addEventListener('click', () => {
+                        score = 0;
+                        resetBall();
+                        gameOverText.style.display = 'none';
+                        intervalId = setInterval(gameLoop, 16);
+                      });
+
+                      // Password to reset high scores with button
+                      const resetPassword = "starwarsOG6";
+
+                      document.getElementById('resetButton').addEventListener('click', () => {
+                        const userInput = prompt("Enter the password to reset high scores:");
+                        
+                        if (userInput === resetPassword) {
+                          highScores = []; // Clear the high scores array
+                          localStorage.removeItem('highScores'); // Remove the high scores from localStorage
+                          renderHighScores(); // Update the displayed high scores
+                          alert("High scores have been reset!");
+                        } else {
+                          alert("Incorrect password. High scores remain unchanged.");
+                        }
+                      });
+                  
+                      canvas.addEventListener('mousemove', movePaddle);
+                      renderHighScores();
+                  </script>
+              </div>
+            </section>
+            <!-- Call to action section-->
+            <section class="py-5 bg-gradient-primary-to-secondary text-white">
+                <div class="container px-5 my-5">
+                    <div class="text-center">
+                        <h2 class="display-4 fw-bolder mb-4">Let's build something together</h2>
+                        <a class="btn btn-outline-light btn-lg px-5 py-3 fs-6 fw-bolder" href="https://linkedin.com/in/conrad-bradford" target="_blank">Contact me</a>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+        <!-- Footer-->
+        <footer class="bg-white py-4 mt-auto">
+            <div class="container px-5">
+                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                    <div class="col-auto">
+                        <button class="btn btn-outline-dark btn-lg px-5 py-3 fs-6 fw-bolder" id="resetButton">Reset High Scores</button>
+                    </div>
+                    <div class="col-auto">
+                      <div class="small m-0">Copyright &copy; Conrad Bradford 2024</div>
+                    </div>
+                    <div class="col-auto">
+                        <a class="small" href="../scratch.html">Star Wars</a>
+                        <span class="mx-1">&middot;</span>
+                        <a class="small" href="https://linkedin.com/in/conrad-bradford" target="_blank">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
